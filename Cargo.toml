@@ -1,0 +1,57 @@
+[package]
+name = "rustpass"
+version = "0.1.0"
+edition = "2021"
+authors = ["hackersuu"]
+description = "Secure local password manager - portable single binary"
+license = "GPL-2.0-only"
+repository = "https://github.com/hackersuu/rustpass"
+homepage = "https://github.com/hackersuu/rustpass"
+
+[[bin]]
+name = "rustpass"
+path = "src/main.rs"
+
+[dependencies]
+# GUI - immediate mode, single binary, no external deps
+eframe = { version = "0.27", default-features = false, features = ["default_fonts", "glow"] }
+egui = "0.27"
+
+# Database - bundled SQLite (statically linked, no external .dll/.so)
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# Encryption - AES-256-GCM (pure Rust)
+aes-gcm = { version = "0.10", features = ["aes"] }
+rand = { version = "0.8", features = ["std", "std_rng"] }
+hex = "0.4"
+
+# Key Derivation - Argon2id (OWASP recommended)
+argon2 = "0.5"
+
+# Memory safety - zeroize wipes RAM on drop
+zeroize = { version = "1.7", features = ["derive"] }
+secrecy = { version = "0.8", features = ["serde"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# Encoding
+base64 = "0.22"
+
+# Clipboard support
+arboard = "3"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
